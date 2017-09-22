@@ -1,0 +1,39 @@
+Using temperature_data table
+
+CREATE TABLE temperature_data (
+Date string ,
+ZipCode int,
+Temperature int)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+STORED AS TEXTFILE;
+
+--1)
+Select Date, Temperature from temperature_data WHERE ZipCode BETWEEN 300000 AND 399999 ;
+
+--2)
+Select SUBSTR(Date,7,10) as year , MAX(Temperature) FROM temperature_data 
+GROUP BY SUBSTR(Date,7,10); 
+
+--3)
+Select SUBSTR(Date,7,10) as year , MAX(Temperature) 
+FROM temperature_data
+GROUP BY SUBSTR(Date,7,10)
+HAVING COUNT(Temperature) > 1 
+
+--4)
+CREATE VIEW temperature_data_vw AS
+Select SUBSTR(Date,7,10) as year , MAX(Temperature) 
+FROM temperature_data
+GROUP BY SUBSTR(Date,7,10)
+HAVING COUNT(Temperature) > 1 ;
+
+--5)
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/cloudera/Desktop/Acadgild/Hive/Assignment_6_2/Output' 
+ROW FORMAT DELIMITED 
+FIELDS TERMINATED BY '|' 
+select * from temperature_data_vw;
+
+
+
+
